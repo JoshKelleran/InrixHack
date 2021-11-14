@@ -35,7 +35,7 @@ def get_events():
             break
         if 'location' in event.keys():
             lat_long = get_lat_long(event['location'])
-            event_data.append((event["summary"], start_time, lat_long))
+            event_data.append((event["summary"], start_string, lat_long))
 
     #print(event_data)
     return event_data

@@ -17,7 +17,7 @@ def set_events(event_name, start_location, end_location, start, end, prob_of_par
     elif prob_of_parking == 4:
         parking_message = 'high'
     elif prob_of_parking == 5:
-        parking_message = 'very high'
+        parking_message = 'very high'z
 
     event = {
         'summary': "Driving to" + event_name,
