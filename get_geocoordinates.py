@@ -23,6 +23,7 @@ def get_lat_long(raw_string):
 
     response = requests.get(url)
 
+    # try catch for empty query result
     results = response.json()['results'][0]
 
     lat = results['geometry']['location']['lat']

@@ -17,8 +17,6 @@ def get_events():
     now_time = datetime.datetime.utcnow()
     now_offset = pytz.utc.localize(now_time)        # Making timezone aware to enable time delta
     now = now_time.isoformat() + 'Z'  # 'Z' indicates UTC time
-    
-    # print("Getting Next Week's worth of data")
    
     events_result = service.events().list(calendarId='primary', timeMin=now,
                                           maxResults=672, singleEvents=True,
@@ -37,7 +35,9 @@ def get_events():
             lat_long = get_lat_long(event['location'])
             event_data.append((event["summary"], start_string, lat_long))
 
-    #print(event_data)
+        if "Driving to" in event['summary']:
+            service.events().delete(calendarId='primary', eventId=event['id']).execute()
+
     return event_data
 
 

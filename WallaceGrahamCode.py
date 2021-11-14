@@ -1,6 +1,7 @@
 import requests
 import json
 import math
+from pprint import pprint
 
 app_id = "04czqoql6k"
 hash_token = "MDRjenFvcWw2a3xKQU9XalBlRmxmM1ZvNUJVN3dHNEU0c2EyRmphTmkxejJvQWZkTG45"
@@ -12,13 +13,21 @@ header = {'Authorization' : 'Bearer ' + api_key}
 
 
 def getParkAndTime(start, end, startTime):
-    coords, off_prob, on_prob = closestParking(end, startTime)
+    temp = [str(x) for x in start]
+    formatted_start = '%2C'.join(temp)
+    temp = [str(x) for x in end]
+    formatted_end = '%7C'.join(temp)
+    # print(formatted_end)
+
+    coords, off_prob, on_prob = closestParking(formatted_end, startTime)
     coords.reverse()
     coords[:] = [str(x) for x in coords]
     driveRouteArg = '%2C'.join(coords)
     # print(driveRouteArg)
     # print('Parktime: ',parkTime(off_prob))
-    return coords, driveRoute(start, driveRouteArg) + parkTime(off_prob), probToInt(on_prob)
+    total_estimated_time = driveRoute(formatted_start, driveRouteArg) + parkTime(off_prob)
+
+    return coords, total_estimated_time, probToInt(on_prob)
 
 
 def probToInt(prob):
@@ -36,22 +45,33 @@ def closestParking(end, event_time):
     off_data = requests.get('https://api.iq.inrix.com/lots/v3?point=' + end + '&radius=' + radius + '&entry_time=' + event_time + '&duration=1', headers = header)
     off_lots = off_data.json()
     off_ind = 0
-    off_min = off_lots['result'][0]['distance']
-    for index, plot in enumerate(off_lots['result']):
-        if plot['distance'] < off_min:
-            off_min = plot['distance']
-            off_ind = index
 
-    #Closest off-street parking
-    off_prob = off_lots['result'][off_ind]['occupancy']['probability']
-    # print(off_lots['result'][off_ind]['occupancy']['probability'])
-    # print(off_lots['result'][off_ind]['point']['coordinates'])
-    # print('Off_prob:', off_prob)
+    # pprint(off_lots)
+
+    if 'result' in off_lots.keys():
+        off_min = off_lots['result'][0]['distance']
+        for index, plot in enumerate(off_lots['result']):
+            if plot['distance'] < off_min:
+                off_min = plot['distance']
+                off_ind = index
+
+
+        #Closest off-street parking
+        off_prob = off_lots['result'][off_ind]['occupancy']['probability']
+        # print(off_lots['result'][off_ind]['occupancy']['probability'])
+        # print(off_lots['result'][off_ind]['point']['coordinates'])
+        # print('Off_prob:', off_prob)
+        parking_lot_coords = off_lots['result'][off_ind]['point']['coordinates']
+    else:
+        off_prob = 0
+        parking_lot_coords = end
+
     on_data = requests.get('https://api.iq.inrix.com/blocks/v3?point=' + end + '&radius=' + str(off_min) + '&entry_time=' + event_time + '&duration=1', headers = header)
     on_lots = on_data.json()
-    # print(on_lots)
+    # pprint(on_lots)
     unscaled_prob = 0
     total_spots = 0
+    open_prob = 0
     for street in on_lots['result']:
         if street['probability'] != None:
             street_spots = 0
@@ -60,16 +80,19 @@ def closestParking(end, event_time):
                 total_spots += plot['spacesTotal']
             unscaled_prob += (street['probability'] * street_spots)
 
-    #Probability of a spot being open within radius of nearest parking.
-    open_prob = unscaled_prob / total_spots
-    # print('Open_prob: ',open_prob)
-    return off_lots['result'][off_ind]['point']['coordinates'], off_prob, open_prob
+        #Probability of a spot being open within radius of nearest parking.
+        open_prob = unscaled_prob / total_spots
+        # print('Open_prob: ',open_prob)
+    return parking_lot_coords, off_prob, open_prob
     # 0-25 is bad, 25-50 is weak, 50-75 is decent, 75-100 look for street side!
 
 
 def driveRoute(start,parking):
     route_data = requests.get('https://api.iq.inrix.com/findRoute?wp_1=' + start + '&wp_2=' + parking + '&format=json', headers = header)
     routing = route_data.json()
+    # pprint(start)
+    # pprint(parking)
+    # pprint(routing)
     routes = dict()
     for item in routing['result']['trip']['routes']:
         routes[item['id']] = item['travelTimeMinutes']
@@ -79,6 +102,8 @@ def driveRoute(start,parking):
 
 def parkTime(prob):
     prob = prob / 100
+    if prob == 0:
+        return 0
     if prob <= .1:
         return 20
     elif prob >= .9:
