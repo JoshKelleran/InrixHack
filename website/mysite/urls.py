@@ -21,6 +21,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
+    path('home', views.index),
     path('login', views.login),
     path('users/google-oauth/', views.googleauth),
     path('calendar', views.calendar),
