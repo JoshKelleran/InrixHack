@@ -1,6 +1,7 @@
 import datetime
 from googleapiclient.discovery import build
 from get_user_token import get_creds
+from get_geocoordinates import get_lat_long
 import pytz
 
 def get_events():
@@ -33,8 +34,8 @@ def get_events():
         if start_time - now_offset > datetime.timedelta(days=7): # TODO: Filter out invalid Locations
             break
         if 'location' in event.keys():
-            #print(event)
-            event_data.append((event['summary'], start_time, event['location']))
+            lat_long = get_lat_long(event['location'])
+            event_data.append((event["summary"], start_time, lat_long))
 
     print(event_data)
     return event_data
