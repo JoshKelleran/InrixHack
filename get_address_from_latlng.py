@@ -19,7 +19,6 @@ def get_address(lat, lng):
     url = f"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&key={API_KEY}"
 
     response = requests.get(url)
-    print(response)
     # try catch for empty query result
     results = response.json()['results'][0]
 

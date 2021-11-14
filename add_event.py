@@ -45,6 +45,3 @@ def set_events(event_name, location, start, end, prob_of_parking):
 
     # add try catch
     event = service.events().insert(calendarId='primary', body=event).execute()
-
-
-set_events('Go To School', 'Santa Clara', "12:00", '1:00', 2)
