@@ -1,3 +1,9 @@
+client_secret.json
+token.json
+GOOG_API_KEY.txt
+venv
+env1
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,3 +133,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+*.json
