@@ -24,6 +24,7 @@ def set_events(event_name, start_location, end_location, start, end, prob_of_par
         'start': {
             'dateTime': start,
         },
+        'colorId': 5,
         'end': {
             'dateTime': end,
         },
