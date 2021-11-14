@@ -41,5 +41,5 @@ if __name__ == '__main__':
         
         current_loc = end_loc
         previous_end_time=event[3]
-        time.sleep(5)
+        #time.sleep(0.5) # live update
         
