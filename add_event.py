@@ -1,8 +1,8 @@
 from googleapiclient.discovery import build
 from get_user_token import get_creds
+import datetime
 
-
-def set_events(event_name, location, start, end, prob_of_parking):
+def set_events(event_name, start_location, end_location, start, end, prob_of_parking):
 
     creds = get_creds()
     service = build('calendar', 'v3', credentials=creds)
@@ -20,9 +20,10 @@ def set_events(event_name, location, start, end, prob_of_parking):
         parking_message = 'very high'
 
     event = {
-        'summary': event_name,
-        'location': location,
-        'description': f'You have a {parking_message} probability of finding parking near your event',
+        'summary': "Driving to" + event_name,
+        'location': 
+        'description': f'You have a {parking_message} probability of finding parking near your event\n'+"https://www.google.com/maps/dir/"+start_location[0]+','+start_location[1]+'/'+end_location[0]+
+        ','+end_location[1])
         'start': {
             'dateTime': start,
         },
@@ -45,3 +46,6 @@ def set_events(event_name, location, start, end, prob_of_parking):
 
     # add try catch
     event = service.events().insert(calendarId='primary', body=event).execute()
+    
+if __name__ == "__main__":
+    set_events("Inrix Hack Presentations", (37.3496418, -121.9389875), (37.3498762, -121.9352013), datetime.datetime.now(), datetime.datetime.now()+ datetime1
