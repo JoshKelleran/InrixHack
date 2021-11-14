@@ -17,14 +17,11 @@ def getParkAndTime(start, end, startTime):
     formatted_start = '%2C'.join(temp)
     temp = [str(x) for x in end]
     formatted_end = '%7C'.join(temp)
-    # print(formatted_end)
 
     coords, off_prob, on_prob = closestParking(formatted_end, startTime)
     coords.reverse()
     coords[:] = [str(x) for x in coords]
     driveRouteArg = '%2C'.join(coords)
-    # print(driveRouteArg)
-    # print('Parktime: ',parkTime(off_prob))
     total_estimated_time = driveRoute(formatted_start, driveRouteArg) + parkTime(off_prob)
 
     return coords, total_estimated_time, probToInt(on_prob)
@@ -46,8 +43,6 @@ def closestParking(end, event_time):
     off_lots = off_data.json()
     off_ind = 0
 
-    # pprint(off_lots)
-
     if 'result' in off_lots.keys():
         off_min = off_lots['result'][0]['distance']
         for index, plot in enumerate(off_lots['result']):
@@ -58,9 +53,6 @@ def closestParking(end, event_time):
 
         #Closest off-street parking
         off_prob = off_lots['result'][off_ind]['occupancy']['probability']
-        # print(off_lots['result'][off_ind]['occupancy']['probability'])
-        # print(off_lots['result'][off_ind]['point']['coordinates'])
-        # print('Off_prob:', off_prob)
         parking_lot_coords = off_lots['result'][off_ind]['point']['coordinates']
     else:
         off_prob = 0
@@ -90,11 +82,16 @@ def closestParking(end, event_time):
 def driveRoute(start,parking):
     route_data = requests.get('https://api.iq.inrix.com/findRoute?wp_1=' + start + '&wp_2=' + parking + '&format=json', headers = header)
     routing = route_data.json()
-    # pprint(start)
-    # pprint(parking)
-    # pprint(routing)
+
     routes = dict()
-    for item in routing['result']['trip']['routes']:
+    # what is wrong here?
+    try:
+        item_ids = routing['result']['trip']['routes']
+    except(Exception):
+        print("Bad Key: ")
+
+
+    for item in item_ids:
         routes[item['id']] = item['travelTimeMinutes']
     fastest_routes = sorted(routes.items(), key = lambda x: x[1])
     # print('Fastest Routes: ', fastest_routes)
