@@ -8,7 +8,7 @@ import datetime
 import pytz
 import time
 
-if __name__ == '__main__':
+def main():
 
     start_loc = ('37.80636','-122.43742')
     #event name, start time, (lat, long), end time
@@ -43,3 +43,6 @@ if __name__ == '__main__':
         previous_end_time=event[3]
         #time.sleep(0.5) # live update
         
+        
+if __name__ == '__main__':
+    main()
