@@ -35,8 +35,8 @@ def get_events():
             lat_long = get_lat_long(event['location'])
             event_data.append((event["summary"], start_string, lat_long))
 
-        # if "Driving to" in event['summary']:
-        #     #remove old event
+        if "Driving to" in event['summary']:
+            service.events().delete(calendarId='primary', eventId=event['id']).execute()
 
     return event_data
 
