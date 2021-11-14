@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from . import views
 
@@ -26,3 +27,5 @@ urlpatterns = [
     path('users/google-oauth/', views.googleauth),
     path('calendar', views.calendar),
 ]
+
+urlpatterns += staticfiles_urlpatterns()

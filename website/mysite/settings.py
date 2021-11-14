@@ -15,6 +15,8 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR =  Path(__file__).resolve().parent.parent
+MEDIA_ROOT = 'static/mysite/media'
+MEDIA_URL = '/media/'
 #TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 

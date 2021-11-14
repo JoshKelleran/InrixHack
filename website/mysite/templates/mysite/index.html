@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<head> {% load static %} </head>
 <title>By Josh Kelleran</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,16 +27,15 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 
   <!-- Navbar on small screens -->
   <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 1</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 2</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 3</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 4</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">Home</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">Login</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">Calendar</a>
   </div>
 </div>
 
 <!-- Header -->
 <header class="w3-container w3-blue w3-center" style="padding:128px 16px">
-  <h1 class="w3-margin w3-jumbo"> <img src="InrixHack/website/mysite/templates/mysite/img/DBT.jpeg" alt= "Driven By Time"> </h1>
+  <h1 class="w3-margin w3-jumbo"> <img src="{% static "mysite/images/DBT.png" %}"/> </h1>
   {% comment %} <h1 class="w3-margin w3-jumbo">Driven By Time</h1> {% endcomment %}
   <p class="w3-xlarge">By Josh Kelleran, Malcolm Weaver, Ryan Hunter, Graham Purvis, Wallace Hwang</p>
   <body>
@@ -95,7 +95,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 </div>
 
 <div class="w3-container w3-black w3-center w3-opacity w3-padding-64">
-    <h1 class="w3-margin w3-xlarge">Quote of the day: live life</h1>
+    <h1 class="w3-margin w3-xlarge">Part of the SCU Inrix Hackathon!</h1>
 </div>
 
 <!-- Footer -->
