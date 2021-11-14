@@ -37,7 +37,7 @@ def get_events():
             lat_long = get_lat_long(event['location'])
             event_data.append((event["summary"], start_time, lat_long))
 
-    print(event_data)
+    #print(event_data)
     return event_data
 
 
