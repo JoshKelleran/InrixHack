@@ -26,14 +26,17 @@ def get_events():
     #    print('No upcoming events found.')
     for event in events:
         start_string = event['start'].get('dateTime', event['start'].get('date'))
+        end_string = event['end'].get('dateTime', event['end'].get('date'))
+        
         if not 'T' in start_string: # no time (only date) for event
             continue
         start_time = datetime.datetime.strptime(start_string, "%Y-%m-%dT%H:%M:%S%z")
+        end_string = datetime.datetime.strptime(end_string, "%Y-%m-%dT%H:%M:%S%z")
         if start_time - now_offset > datetime.timedelta(days=7): # TODO: Filter out invalid Locations
             break
         if 'location' in event.keys():
             lat_long = get_lat_long(event['location'])
-            event_data.append((event["summary"], start_string, lat_long))
+            event_data.append((event["summary"], start_string, lat_long, end_string))
 
         if "Driving to" in event['summary']:
             service.events().delete(calendarId='primary', eventId=event['id']).execute()

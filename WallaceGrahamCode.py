@@ -19,6 +19,7 @@ def getParkAndTime(start, end, startTime):
     formatted_end = '%7C'.join(temp)
 
     coords, off_prob, on_prob = closestParking(formatted_end, startTime)
+    print(coords)
     coords.reverse()
     coords[:] = [str(x) for x in coords]
     driveRouteArg = '%2C'.join(coords)
@@ -42,7 +43,10 @@ def closestParking(end, event_time):
     off_data = requests.get('https://api.iq.inrix.com/lots/v3?point=' + end + '&radius=' + radius + '&entry_time=' + event_time + '&duration=1', headers = header)
     off_lots = off_data.json()
     off_ind = 0
-
+    off_min = '250'
+    
+    # set off min to 250 meters if no parking lots around
+    #pprint(off_lots)
     if 'result' in off_lots.keys():
         off_min = off_lots['result'][0]['distance']
         for index, plot in enumerate(off_lots['result']):
@@ -64,32 +68,40 @@ def closestParking(end, event_time):
     unscaled_prob = 0
     total_spots = 0
     open_prob = 0
-    for street in on_lots['result']:
-        if street['probability'] != None:
-            street_spots = 0
-            for plot in street['segments']:
-                street_spots += plot['spacesTotal']
-                total_spots += plot['spacesTotal']
-            unscaled_prob += (street['probability'] * street_spots)
+    if 'result' in on_lots.keys():
+        for street in on_lots['result']:
+            if street['probability'] != None:
+                street_spots = 0
+                for plot in street['segments']:
+                    street_spots += plot['spacesTotal']
+                    total_spots += plot['spacesTotal']
+                unscaled_prob += (street['probability'] * street_spots)
 
-        #Probability of a spot being open within radius of nearest parking.
-        open_prob = unscaled_prob / total_spots
-        # print('Open_prob: ',open_prob)
+            #Probability of a spot being open within radius of nearest parking.
+            try:
+                open_prob = unscaled_prob / total_spots
+            except(ZeroDivisionError):
+                continue
+            # print('Open_prob: ',open_prob)
+    
     return parking_lot_coords, off_prob, open_prob
     # 0-25 is bad, 25-50 is weak, 50-75 is decent, 75-100 look for street side!
 
 
 def driveRoute(start,parking):
+    print(start, parking)
     route_data = requests.get('https://api.iq.inrix.com/findRoute?wp_1=' + start + '&wp_2=' + parking + '&format=json', headers = header)
     routing = route_data.json()
 
     routes = dict()
     # what is wrong here?
     try:
+        #pprint(routing)
         item_ids = routing['result']['trip']['routes']
     except(Exception):
-        print("Bad Key: ")
-
+         route_data = requests.get('https://api.iq.inrix.com/findRoute?wp_1=' + start + '&wp_2=' + parking + '&format=json', headers = header)
+         routing = route_data.json()
+         item_ids = routing['result']['trip']['routes']
 
     for item in item_ids:
         routes[item['id']] = item['travelTimeMinutes']
