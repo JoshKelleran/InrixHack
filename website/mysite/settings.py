@@ -15,8 +15,15 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR =  Path(__file__).resolve().parent.parent
-MEDIA_ROOT = 'static/mysite/media'
-MEDIA_URL = '/media/'
+MEDIA_ROOT = '/media/'
+MEDIA_URL = 'media/'
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.dirname(BASE_DIR) + '/static/'
+
+GOOGLE_CLIENT_ID = ''  
+GOOGLE_CLIENT_SECRET = ''
+GOOGLE_SCOPE = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar'
+OAUTH_REDIRECT_URI = 'http://<domain>/oauth2/redirect/'
 #TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 
